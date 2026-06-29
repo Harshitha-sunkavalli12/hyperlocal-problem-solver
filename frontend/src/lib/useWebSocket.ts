@@ -13,8 +13,16 @@ export function useWebSocket(onMessage?: (m: WsMessage) => void) {
   const ref = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const proto = window.location.protocol === "https:" ? "wss" : "ws";
-    const ws = new WebSocket(`${proto}://${window.location.host}/ws`);
+    let wsUrl = `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/ws`;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    if (backendUrl) {
+      try {
+        const url = new URL(backendUrl);
+        const proto = url.protocol === "https:" ? "wss:" : "ws:";
+        wsUrl = `${proto}//${url.host}/ws`;
+      } catch { /* ignore */ }
+    }
+    const ws = new WebSocket(wsUrl);
     ref.current = ws;
     ws.onopen = () => setConnected(true);
     ws.onclose = () => setConnected(false);

@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: community-hero-backend
+    env: docker
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+    disk:
+      name: sqlite-data
+      mountPath: /app/data
+      sizeGB: 1
+    # Note: If using the persistent disk, the DB URL should point to it:
+    # - key: DATABASE_URL
+    #   value: sqlite:////app/data/community_hero.db
+
+  - type: web
+    name: community-hero-frontend
+    env: docker
+    dockerContext: ./frontend
+    dockerfilePath: ./frontend/Dockerfile
+    envVars:
+      - key: BACKEND_URL
+        fromService:
+          type: web
+          name: community-hero-backend
+          envVarKey: RENDER_INTERNAL_HOSTNAME
+      # We need to prepend http:// and append :8080 since Nginx proxy_pass expects a full URL.
+      # Render provides RENDER_INTERNAL_HOSTNAME which is the internal network name.
+      - key: BACKEND_URL
+        value: http://community-hero-backend:8080
