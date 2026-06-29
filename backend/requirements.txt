@@ -1,0 +1,16 @@
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+sqlalchemy==2.0.36
+pydantic==2.10.3
+pydantic-settings==2.6.1
+python-multipart==0.0.19
+websockets==14.1
+httpx==0.28.1
+# --- Dev / test ---
+pytest==8.3.4
+hypothesis==6.122.3
+# --- Optional AI / Google deps (app runs without them via graceful fallback) ---
+google-generativeai==0.8.3
+anthropic==0.40.0
+langgraph==0.2.53
+chromadb==0.5.23
