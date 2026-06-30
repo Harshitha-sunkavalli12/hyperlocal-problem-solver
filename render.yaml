@@ -16,8 +16,8 @@ services:
       mountPath: /app/data
       sizeGB: 1
     # Note: If using the persistent disk, the DB URL should point to it:
-    # - key: DATABASE_URL
-    #   value: sqlite:////app/data/community_hero.db
+      - key: DATABASE_URL
+        value: sqlite:////app/data/community_hero.db
 
   - type: web
     name: community-hero-frontend
@@ -25,11 +25,6 @@ services:
     dockerContext: ./frontend
     dockerfilePath: ./frontend/Dockerfile
     envVars:
-      - key: BACKEND_URL
-        fromService:
-          type: web
-          name: community-hero-backend
-          envVarKey: RENDER_INTERNAL_HOSTNAME
       # We need to prepend http:// and append :8080 since Nginx proxy_pass expects a full URL.
       # Render provides RENDER_INTERNAL_HOSTNAME which is the internal network name.
       - key: BACKEND_URL
